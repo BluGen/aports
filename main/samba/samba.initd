@@ -4,7 +4,10 @@ extra_started_commands="reload"
 piddir=${piddir:-"/run/samba"}
 
 DAEMON=${RC_SVCNAME#samba.}
-if [ "$DAEMON" != "$RC_SVCNAME" ]; then
+SERVER_ROLE=`samba-tool testparm --parameter-name="server role"  2>/dev/null | tail -1`
+if [ "$SERVER_ROLE" = "active directory domain controller" ]; then
+        daemon_list="samba"
+elif [ "$DAEMON" != "$RC_SVCNAME" ]; then
 	daemon_list=$DAEMON
 fi
 
